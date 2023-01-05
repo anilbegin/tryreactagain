@@ -17,7 +17,7 @@ function Footer() {
         </a>
       </p>
       <p className="m-0">
-        Copyright &copy; 2020{" "}
+        Copyright &copy; {new Date().getFullYear()}{" "}
         <a href="/" className="text-muted">
           ComplexApp
         </a>
