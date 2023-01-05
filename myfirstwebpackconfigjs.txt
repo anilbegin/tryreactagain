@@ -8,20 +8,17 @@ module.exports = {
     filename: "bundled.js"
   },
   mode: "development",
-  devtool: "source-map",
   devServer: {
     port: 3000,
     static: {
       directory: path.join(__dirname, "app")
     },
-    hot: true,
-    liveReload: false,
-    historyApiFallback: { index: "index.html" }
+    hot: true
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /.\js$/,
         exclude: /(node_modules)/,
         use: {
           loader: "babel-loader",
