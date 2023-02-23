@@ -11,7 +11,7 @@ function ViewSinglePost() {
   const [isLoading, setIsLoading] = useState(true)
   const [post, setPost] = useState()
 
-  useState(() => {
+  useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
     async function fetchPost() {
       try {
@@ -43,9 +43,9 @@ function ViewSinglePost() {
       <div className="d-flex justify-content-between">
         <h2>{post.title}</h2>
         <span className="pt-2">
-          <a data-tip="Edit" data-for="edit" href="#" className="text-primary mr-2">
+          <Link data-tip="Edit" data-for="edit" to={`/post/${id}/edit`} className="text-primary mr-2">
             <i className="fas fa-edit"></i>
-          </a>
+          </Link>
           <ReactTooltip id="edit" className="custom-tooltip" />
           <a data-tip="Delete" data-for="delete" className="delete-post-button text-danger">
             <i className="fas fa-trash"></i>
