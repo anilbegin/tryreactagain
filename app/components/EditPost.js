@@ -35,19 +35,36 @@ function EditPost() {
         draft.isFetching = false
         return
       case "updateTitle":
+        draft.title.hasErrors = false
         draft.title.value = action.value
         return
       case "updateBody":
+        draft.body.hasErrors = false
         draft.body.value = action.value
         return
       case "saveUpdates":
-        draft.sendCount++
+        if (!draft.title.hasErrors && !draft.body.hasErrors) {
+          draft.sendCount++
+        }
+
         return
       case "updateBegin":
         draft.saveChanges = true
         return
       case "updateComplete":
         draft.saveChanges = false
+        return
+      case "checkTitle":
+        if (!action.value.trim()) {
+          draft.title.hasErrors = true
+          draft.title.message = "You must provide a title"
+        }
+        return
+      case "checkBody":
+        if (!action.value.trim()) {
+          draft.body.hasErrors = true
+          draft.body.message = "Body section cannot be left blank"
+        }
         return
     }
   }
@@ -99,6 +116,8 @@ function EditPost() {
 
   function handleUpdates(e) {
     e.preventDefault()
+    dispatch({ type: "checkTitle", value: state.title.value })
+    dispatch({ tupe: "checkBody", value: state.body.value })
     dispatch({ type: "saveUpdates" })
   }
 
@@ -109,14 +128,16 @@ function EditPost() {
           <label htmlFor="post-title" className="text-muted mb-1">
             <small>Title</small>
           </label>
-          <input value={state.title.value} onChange={e => dispatch({ type: "updateTitle", value: e.target.value })} autoFocus name="title" id="post-title" className="form-control form-control-lg form-control-title" type="text" placeholder="" autoComplete="off" />
+          <input onBlur={e => dispatch({ type: "checkTitle", value: e.target.value })} value={state.title.value} onChange={e => dispatch({ type: "updateTitle", value: e.target.value })} autoFocus name="title" id="post-title" className="form-control form-control-lg form-control-title" type="text" placeholder="" autoComplete="off" />
+          {state.title.hasErrors && <div className="alert alert-danger small liveValidateMessage">{state.title.message}</div>}
         </div>
 
         <div className="form-group">
           <label htmlFor="post-body" className="text-muted mb-1 d-block">
             <small>Body Content</small>
           </label>
-          <textarea value={state.body.value} onChange={e => dispatch({ type: "updateBody", value: e.target.value })} name="body" id="post-body" className="body-content tall-textarea form-control" type="text" />
+          <textarea onBlur={e => dispatch({ type: "checkBody", value: e.target.value })} value={state.body.value} onChange={e => dispatch({ type: "updateBody", value: e.target.value })} name="body" id="post-body" className="body-content tall-textarea form-control" type="text" />
+          {state.body.hasErrors && <div className="alert small alert-danger liveValidateMessage">{state.body.message}</div>}
         </div>
 
         <button className="btn btn-primary" disabled={state.saveChanges}>
