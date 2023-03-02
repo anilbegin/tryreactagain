@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown"
 import ReactTooltip from "react-tooltip"
 import Page from "./Page"
 import LoadingDotsIcon from "./LoadingDotsIcon"
+import NotFound from "./NotFound"
 
 function ViewSinglePost() {
   const { id } = useParams()
@@ -35,14 +36,7 @@ function ViewSinglePost() {
       </Page>
     )
   if (!isLoading && !post) {
-    return (
-      <Page title="Page Not Found !!">
-        <h2>Whoops !! We can't find that page</h2>
-        <p>
-          You can always go back to the <Link to="/">homepage</Link> and make a fresh start.
-        </p>
-      </Page>
-    )
+    return <NotFound />
   }
 
   const date = new Date(post.createdDate)

@@ -20,6 +20,7 @@ import ViewSinglePost from "./components/ViewSinglePost"
 import EditPost from "./components/EditPost"
 import FlashMessages from "./components/FlashMessages"
 import Profile from "./components/Profile"
+import NotFound from "./components/NotFound"
 
 function Main() {
   const initialState = {
@@ -74,6 +75,7 @@ function Main() {
             <Route path="/profile/:username/*" element={<Profile />} />
             <Route path="/about-us" element={<About />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
         </BrowserRouter>

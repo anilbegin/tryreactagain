@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useContext } from "react"
-import { useParams, Link } from "react-router-dom"
+import { useParams, Link, useNavigate } from "react-router-dom"
 import { useImmerReducer } from "use-immer"
 import Axios from "axios"
 import Page from "./Page"
 import LoadingDotsIcon from "./LoadingDotsIcon"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import NotFound from "./NotFound"
 
 function EditPost() {
+  const navigate = useNavigate()
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const originalState = {
@@ -82,6 +84,10 @@ function EditPost() {
       try {
         const response = await Axios.get(`/post/${state.id}`, { cancelToken: ourRequest.token })
         if (response.data) {
+          if (appState.user.username != response.data.author.username) {
+            appDispatch({ type: "flashMessage", value: "You are not allowed to edit that post." })
+            navigate("/")
+          }
           dispatch({ type: "fetchComplete", value: response.data })
         } else {
           dispatch({ type: "notFound" })
@@ -125,14 +131,7 @@ function EditPost() {
   }
 
   if (state.notFound) {
-    return (
-      <Page title="Page Not Found">
-        <h2>Whoops!!, we can't find that page.</h2>
-        <p>
-          You can always go back to the <Link to="/">homepage</Link> and make a fresh start.
-        </p>
-      </Page>
-    )
+    return <NotFound />
   }
 
   function handleUpdates(e) {
@@ -144,7 +143,11 @@ function EditPost() {
 
   return (
     <Page title="Edit Post">
-      <form onSubmit={handleUpdates}>
+      <Link to={`/post/${state.id}`} className="font-weight-bold">
+        &laquo; back to post permalink
+      </Link>
+
+      <form className="mt-3" onSubmit={handleUpdates}>
         <div className="form-group">
           <label htmlFor="post-title" className="text-muted mb-1">
             <small>Title</small>
