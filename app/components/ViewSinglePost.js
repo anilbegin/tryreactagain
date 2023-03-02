@@ -34,6 +34,16 @@ function ViewSinglePost() {
         <LoadingDotsIcon />
       </Page>
     )
+  if (!isLoading && !post) {
+    return (
+      <Page title="Page Not Found !!">
+        <h2>Whoops !! We can't find that page</h2>
+        <p>
+          You can always go back to the <Link to="/">homepage</Link> and make a fresh start.
+        </p>
+      </Page>
+    )
+  }
 
   const date = new Date(post.createdDate)
   const formattedDate = `${date.getDate()} ${date.getMonth() + 1} ${date.getFullYear()}`

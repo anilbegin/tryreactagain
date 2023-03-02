@@ -24,7 +24,8 @@ function EditPost() {
     id: useParams().id,
     isFetching: true,
     saveChanges: false,
-    sendCount: 0
+    sendCount: 0,
+    notFound: false
   }
 
   function ourReducer(draft, action) {
@@ -66,6 +67,10 @@ function EditPost() {
           draft.body.message = "Body section cannot be left blank"
         }
         return
+      case "notFound":
+        draft.isFetching = false
+        draft.notFound = true
+        return
     }
   }
 
@@ -76,7 +81,11 @@ function EditPost() {
     async function fetchPost() {
       try {
         const response = await Axios.get(`/post/${state.id}`, { cancelToken: ourRequest.token })
-        dispatch({ type: "fetchComplete", value: response.data })
+        if (response.data) {
+          dispatch({ type: "fetchComplete", value: response.data })
+        } else {
+          dispatch({ type: "notFound" })
+        }
       } catch (e) {
         console.log("There was a problem")
       }
@@ -107,12 +116,24 @@ function EditPost() {
     }
   }, [state.sendCount])
 
-  if (state.isFetching)
+  if (state.isFetching) {
     return (
       <Page title="...">
         <LoadingDotsIcon />
       </Page>
     )
+  }
+
+  if (state.notFound) {
+    return (
+      <Page title="Page Not Found">
+        <h2>Whoops!!, we can't find that page.</h2>
+        <p>
+          You can always go back to the <Link to="/">homepage</Link> and make a fresh start.
+        </p>
+      </Page>
+    )
+  }
 
   function handleUpdates(e) {
     e.preventDefault()
