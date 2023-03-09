@@ -30,6 +30,7 @@
     "react-markdown": "^8.0.5",
     "react-router-dom": "^6.6.1",
     "react-tooltip": "^4.2.21",
+    "react-transition-group": "^4.4.5",
     "use-immer": "^0.8.1",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
