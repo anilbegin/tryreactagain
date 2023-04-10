@@ -99,7 +99,7 @@ function Search() {
                 const date = new Date(post.createdDate)
                 const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
                 return (
-                  <Link key={post._id} to={`/post/${post._id}`} className="list-group-item list-group-item-action">
+                  <Link onClick={() => appDispatch({ type: "closeSearch" })} key={post._id} to={`/post/${post._id}`} className="list-group-item list-group-item-action">
                     <img className="avatar-tiny" src={post.author.avatar} /> <strong>{post.title}</strong>{" "}
                     <span className="text-muted small">
                       by {post.author.username} on {formattedDate}{" "}
