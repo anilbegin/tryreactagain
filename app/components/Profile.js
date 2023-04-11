@@ -8,7 +8,7 @@ import Page from "./Page"
 import ProfilePosts from "./ProfilePosts"
 import ProfileFollowers from "./ProfileFollowers"
 import ProfileFollowing from "./ProfileFollowing"
-import ProfileFollow from "./ProfileFollow"
+// import ProfileFollow from "./ProfileFollow"
 
 function Profile() {
   const { username } = useParams()
@@ -143,8 +143,8 @@ function Profile() {
 
       <Routes>
         <Route path="" element={<ProfilePosts />} />
-        <Route path="followers" element={<ProfileFollow action="followers" />} />
-        <Route path="following" element={<ProfileFollow action="following" />} />
+        <Route path="followers" element={<ProfileFollowers />} />
+        <Route path="following" element={<ProfileFollowing />} />
       </Routes>
     </Page>
   )
