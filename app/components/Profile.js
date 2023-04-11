@@ -1,11 +1,13 @@
 import React, { useEffect, useContext } from "react"
 import { useImmer } from "use-immer"
-import { useParams, NavLink } from "react-router-dom"
+import { useParams, NavLink, Routes, Route } from "react-router-dom"
 import Axios from "axios"
 import StateContext from "../StateContext"
 
 import Page from "./Page"
 import ProfilePosts from "./ProfilePosts"
+import ProfileFollowers from "./ProfileFollowers"
+import ProfileFollowing from "./ProfileFollowing"
 
 function Profile() {
   const { username } = useParams()
@@ -40,7 +42,7 @@ function Profile() {
     return () => {
       ourRequest.cancel()
     }
-  }, [])
+  }, [username])
 
   // start following a user
   useEffect(() => {
@@ -138,7 +140,11 @@ function Profile() {
         </NavLink>
       </div>
 
-      <ProfilePosts />
+      <Routes>
+        <Route path="" element={<ProfilePosts />} />
+        <Route path="followers" element={<ProfileFollowers />} />
+        <Route path="following" element={<ProfileFollowing />} />
+      </Routes>
     </Page>
   )
 }
