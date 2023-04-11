@@ -40,7 +40,7 @@ function Profile() {
     return () => {
       ourRequest.cancel()
     }
-  }, [])
+  }, [username])
 
   // start following a user
   useEffect(() => {
