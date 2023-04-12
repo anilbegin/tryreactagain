@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useParams, Link } from "react-router-dom"
 import Axios from "axios"
 import LoadingDotsIcon from "./LoadingDotsIcon"
+import Posts from "./Posts"
 
 function ProfilePosts() {
   const { username } = useParams()
@@ -30,13 +31,7 @@ function ProfilePosts() {
   return (
     <div className="list-group">
       {posts.map(post => {
-        const date = new Date(post.createdDate)
-        const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
-        return (
-          <Link key={post._id} to={`/post/${post._id}`} className="list-group-item list-group-item-action">
-            <img className="avatar-tiny" src={post.author.avatar} /> <strong>{post.title}</strong> <span className="text-muted small">{formattedDate} </span>
-          </Link>
-        )
+        return <Posts post={post} key={post._id} noAuthor={true} />
       })}
     </div>
   )
