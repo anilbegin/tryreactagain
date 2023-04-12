@@ -21,7 +21,7 @@ function HeaderLoggedIn(props) {
       <a onClick={handleSearchIcon} href="#" className="text-white mr-2 header-search-icon">
         <i className="fas fa-search"></i>
       </a>
-      <span className="mr-2 header-chat-icon text-white">
+      <span onClick={() => appDispatch({ type: "toggleChat" })} className="mr-2 header-chat-icon text-white">
         <i className="fas fa-comment"></i>
         <span className="chat-count-badge text-white"> </span>
       </span>
