@@ -1,7 +1,11 @@
 import React, { useContext, useRef, useEffect } from "react"
 import { useImmer } from "use-immer"
+import io from "socket.io-client"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+
+// will establish an ongoing connection between the Browser and the backend server
+const socket = io("http://localhost:8080")
 
 function Chat() {
   const appState = useContext(StateContext)
@@ -13,11 +17,24 @@ function Chat() {
     chatMessages: []
   })
 
+  // focus on the input field as soon as you open the chat window
   useEffect(() => {
     if (appState.isChatOpen) {
       chatField.current.focus()
     }
   }, [appState.isChatOpen])
+
+  // 'chatFromBrowser', 'chatFromServer' event names refered from "backend-api/app.js" file.
+  // frontend needs to begin listening for an event named chatFromServer
+  // we would want to begin lisgtening for it, the first time this component renders
+  // hence the below useEffect
+  useEffect(() => {
+    socket.on("chatFromServer", message => {
+      setState(draft => {
+        draft.chatMessages.push(message)
+      })
+    })
+  }, [])
 
   function handleChatField(e) {
     const value = e.target.value
@@ -29,7 +46,9 @@ function Chat() {
   function handleSubmit(e) {
     e.preventDefault()
     // send the chat message to the server
+    socket.emit("chatFromBrowser", { message: state.fieldValue, token: appState.user.token })
     setState(draft => {
+      // add message to state collection of messgaes
       draft.chatMessages.push({ message: draft.fieldValue, username: appState.user.username, avatar: appState.user.avatar })
       draft.fieldValue = ""
     })
@@ -58,14 +77,14 @@ function Chat() {
           return (
             <div className="chat-other">
               <a href="#">
-                <img className="avatar-tiny" src="https://gravatar.com/avatar/b9216295c1e3931655bae6574ac0e4c2?s=128" />
+                <img className="avatar-tiny" src={message.avatar} />
               </a>
               <div className="chat-message">
                 <div className="chat-message-inner">
                   <a href="#">
-                    <strong>barksalot:</strong>
+                    <strong>{message.username}: </strong>
                   </a>
-                  Hey, I am good, how about you?
+                  {message.message}
                 </div>
               </div>
             </div>
