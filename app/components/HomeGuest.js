@@ -1,20 +1,65 @@
 import React, { useState } from "react"
+import { useImmerReducer } from "use-immer"
+import { CSSTransition } from "react-transition-group"
 import Page from "./Page"
 import Axios from "axios"
 
 function HomeGuest() {
-  const [username, setUsername] = useState()
-  const [email, setEmail] = useState()
-  const [password, setPassword] = useState()
+  const initialState = {
+    username: {
+      value: "",
+      hasErrors: false,
+      message: "",
+      isUnique: false
+    },
+    email: {
+      value: "",
+      hasErrors: false,
+      message: "",
+      isUnique: false
+    },
+    password: {
+      value: "",
+      hasErrors: false,
+      message: ""
+    }
+  }
+
+  function ourReducer(draft, action) {
+    switch (action.type) {
+      case "usernameImmediately":
+        draft.username.hasErrors = false
+        draft.username.value = action.value
+        if (draft.username.value.length > 30) {
+          draft.username.hasErrors = true
+          draft.username.message = "Username should not exceed 30 characters"
+        }
+        if (draft.username.value && !/^([a-zA-Z0-9]+)$/.test(draft.username.value)) {
+          draft.username.hasErrors = true
+          draft.username.message = "Only alphabets and numbers are allowed"
+        }
+        return
+      case "usernameAfterDelay":
+        return
+      case "usernameIsUnique":
+        return
+      case "emailImmediately":
+        return
+      case "emailAfterDelay":
+        return
+      case "emailIsUnique":
+        return
+      case "passwordImmediately":
+        return
+      case "passwordAfterDelay":
+        return
+    }
+  }
+
+  const [state, dispatch] = useImmerReducer(ourReducer, initialState)
 
   async function handleSubmit(e) {
     e.preventDefault()
-    try {
-      await Axios.post("/register", { username: username, email: email, password: password })
-      console.log("user was successfully created")
-    } catch (e) {
-      console.log(e.response.data)
-    }
   }
   return (
     <Page title="Homepage" wide={true}>
@@ -29,7 +74,10 @@ function HomeGuest() {
               <label htmlFor="username-register" className="text-muted mb-1">
                 <small>Username</small>
               </label>
-              <input onChange={e => setUsername(e.target.value)} id="username-register" name="username" className="form-control" type="text" placeholder="Pick a username" autoComplete="off" />
+              <input onChange={e => dispatch({ type: "usernameImmediately", value: e.target.value })} id="username-register" name="username" className="form-control" type="text" placeholder="Pick a username" autoComplete="off" />
+              <CSSTransition in={state.username.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                <div className="alert alert-danger small liveValidateMessage">{state.username.message}</div>
+              </CSSTransition>
             </div>
             <div className="form-group">
               <label htmlFor="email-register" className="text-muted mb-1">
