@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useImmerReducer } from "use-immer"
 import { CSSTransition } from "react-transition-group"
 import Page from "./Page"
@@ -40,6 +40,10 @@ function HomeGuest() {
         }
         return
       case "usernameAfterDelay":
+        if (draft.username.value.length < 3) {
+          draft.username.hasErrors = true
+          draft.username.message = "Username has to be atleast 3 characters long"
+        }
         return
       case "usernameIsUnique":
         return
@@ -58,6 +62,16 @@ function HomeGuest() {
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState)
 
+  // check errors in username after a specific time delay
+  useEffect(() => {
+    if (state.username.value) {
+      const delay = setTimeout(() => dispatch({ type: "usernameAfterDelay" }), 900)
+
+      return () => clearTimeout(delay)
+    }
+  }, [state.username.value])
+
+  // when user submit the form
   async function handleSubmit(e) {
     e.preventDefault()
   }
