@@ -10,13 +10,15 @@ function HomeGuest() {
       value: "",
       hasErrors: false,
       message: "",
-      isUnique: false
+      isUnique: false,
+      sendCount: 0
     },
     email: {
       value: "",
       hasErrors: false,
       message: "",
-      isUnique: false
+      isUnique: false,
+      sendCount: 0
     },
     password: {
       value: "",
@@ -44,8 +46,20 @@ function HomeGuest() {
           draft.username.hasErrors = true
           draft.username.message = "Username has to be atleast 3 characters long"
         }
+        // checkCount to be triggered to send Axios request( the Axios request checks if username already Exists in DB)
+        if (!draft.username.hasErrors) {
+          draft.username.sendCount++
+        }
         return
       case "usernameIsUnique":
+        // dispatched after Axios request responds to if Username is unique
+        if (action.value) {
+          draft.username.hasErrors = true
+          draft.username.isUnique = false
+          draft.username.message = "This username is already in use"
+        } else {
+          draft.username.isUnique = true
+        }
         return
       case "emailImmediately":
         return
@@ -70,6 +84,23 @@ function HomeGuest() {
       return () => clearTimeout(delay)
     }
   }, [state.username.value])
+
+  // procedure to check if the username is unique
+  useEffect(() => {
+    if (state.username.sendCount) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          const response = await Axios.post("/doesUsernameExist", { username: state.username.value }, { cancelToken: ourRequest.token })
+          dispatch({ type: "usernameIsUnique", value: response.data })
+        } catch (e) {
+          console.log("There was a problem")
+        }
+      }
+      fetchResults()
+      return () => ourRequest.cancel()
+    }
+  }, [state.username.sendCount])
 
   // when user submit the form
   async function handleSubmit(e) {
