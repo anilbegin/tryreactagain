@@ -46,6 +46,7 @@ function HomeGuest() {
           draft.username.hasErrors = true
           draft.username.message = "Username has to be atleast 3 characters long"
         }
+        // if there are no Errors found yet, then start procedure of chcking if username us Unique
         // checkCount to be triggered to send Axios request( the Axios request checks if username already Exists in DB)
         if (!draft.username.hasErrors) {
           draft.username.sendCount++
@@ -62,10 +63,27 @@ function HomeGuest() {
         }
         return
       case "emailImmediately":
+        draft.email.hasErrors = false
+        draft.email.value = action.value
         return
       case "emailAfterDelay":
+        if (!/^[a-zA-Z0-9]+\.?[a-zA-Z0-9]+@(yahoo|ymail|rocketmail|gmail|rediffmail|outlook|live)\.com$/.test(draft.email.value)) {
+          draft.email.hasErrors = true
+          draft.email.message = "you need to enter a valid email address"
+        }
+        // if there are no errors yet, then start procedure to check if email already exists/in use
+        if (!draft.email.hasErrors) {
+          draft.email.sendCount++
+        }
         return
       case "emailIsUnique":
+        if (action.value) {
+          draft.email.isUnique = false
+          draft.email.hasErrors = true
+          draft.email.message = "this email is already in use"
+        } else {
+          draft.email.isUnique = true
+        }
         return
       case "passwordImmediately":
         return
@@ -102,7 +120,33 @@ function HomeGuest() {
     }
   }, [state.username.sendCount])
 
-  // when user submit the form
+  // procedure to trigger dispatch of emailafterdelay check
+  useEffect(() => {
+    if (state.email.value) {
+      const delay = setTimeout(() => dispatch({ type: "emailAfterDelay" }), 800)
+
+      return () => clearTimeout(delay)
+    }
+  }, [state.email.value])
+
+  //procedure to check if EMAIL Address already exists in database
+  useEffect(() => {
+    if (state.email.sendCount) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          const response = await Axios.post("/doesEmailExist", { email: state.email.value }, { cancelToken: ourRequest.token })
+          dispatch({ type: "emailIsUnique", value: response.data })
+        } catch (e) {
+          console.log("there was a problem")
+        }
+      }
+      fetchResults()
+      return () => ourRequest.cancel()
+    }
+  }, [state.email.sendCount])
+
+  // when user submits the form
   async function handleSubmit(e) {
     e.preventDefault()
   }
@@ -128,13 +172,16 @@ function HomeGuest() {
               <label htmlFor="email-register" className="text-muted mb-1">
                 <small>Email</small>
               </label>
-              <input onChange={e => setEmail(e.target.value)} id="email-register" name="email" className="form-control" type="text" placeholder="you@example.com" autoComplete="off" />
+              <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" className="form-control" type="text" placeholder="you@example.com" autoComplete="off" />
+              <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                <div className="alert alert-danger small liveValidateMessage">{state.email.message}</div>
+              </CSSTransition>
             </div>
             <div className="form-group">
               <label htmlFor="password-register" className="text-muted mb-1">
                 <small>Password</small>
               </label>
-              <input onChange={e => setPassword(e.target.value)} id="password-register" name="password" className="form-control" type="password" placeholder="Create a password" />
+              <input id="password-register" name="password" className="form-control" type="password" placeholder="Create a password" />
             </div>
             <button type="submit" className="py-3 mt-4 btn btn-lg btn-success btn-block">
               Sign up for ComplexApp
