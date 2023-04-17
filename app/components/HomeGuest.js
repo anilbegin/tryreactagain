@@ -86,15 +86,25 @@ function HomeGuest() {
         }
         return
       case "passwordImmediately":
+        draft.password.hasErrors = false
+        draft.password.value = action.value
         return
       case "passwordAfterDelay":
+        if (draft.password.value.length > 50) {
+          draft.password.hasErrors = true
+          draft.password.message = "Password should not exceed 50 characters"
+        }
+        if (draft.password.value.length < 12) {
+          draft.password.hasErrors = true
+          draft.password.message = "Password should have atleast 12 characters"
+        }
         return
     }
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState)
 
-  // check errors in username after a specific time delay
+  // check errors in USERNAME after a specific time delay
   useEffect(() => {
     if (state.username.value) {
       const delay = setTimeout(() => dispatch({ type: "usernameAfterDelay" }), 900)
@@ -103,7 +113,7 @@ function HomeGuest() {
     }
   }, [state.username.value])
 
-  // procedure to check if the username is unique
+  // procedure to check if the USERNAME is unique
   useEffect(() => {
     if (state.username.sendCount) {
       const ourRequest = Axios.CancelToken.source()
@@ -120,7 +130,7 @@ function HomeGuest() {
     }
   }, [state.username.sendCount])
 
-  // procedure to trigger dispatch of emailafterdelay check
+  // procedure to trigger dispatch of EMAILafterdelay check
   useEffect(() => {
     if (state.email.value) {
       const delay = setTimeout(() => dispatch({ type: "emailAfterDelay" }), 800)
@@ -145,6 +155,15 @@ function HomeGuest() {
       return () => ourRequest.cancel()
     }
   }, [state.email.sendCount])
+
+  // check PASSWORD for errors after a time delay
+  useEffect(() => {
+    if (state.password.value) {
+      const delay = setTimeout(() => dispatch({ type: "passwordAfterDelay" }), 800)
+
+      return () => clearTimeout(delay)
+    }
+  }, [state.password.value])
 
   // when user submits the form
   async function handleSubmit(e) {
@@ -181,7 +200,10 @@ function HomeGuest() {
               <label htmlFor="password-register" className="text-muted mb-1">
                 <small>Password</small>
               </label>
-              <input id="password-register" name="password" className="form-control" type="password" placeholder="Create a password" />
+              <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" className="form-control" type="password" placeholder="Create a password" />
+              <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                <div className="alert alert-danger small liveValidateMessage">{state.password.message}</div>
+              </CSSTransition>
             </div>
             <button type="submit" className="py-3 mt-4 btn btn-lg btn-success btn-block">
               Sign up for ComplexApp
