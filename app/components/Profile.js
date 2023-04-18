@@ -114,7 +114,7 @@ function Profile() {
   }
 
   return (
-    <Page title="Your Profile">
+    <Page title={appState.user.username != username || !appState.loggedIn ? username + "'s Profile" : "Your profile"}>
       <h2>
         <img className="avatar-small" src={state.profileData.profileAvatar} /> {state.profileData.profileUsername}
         {appState.loggedIn && appState.user.username != state.profileData.profileUsername && !state.profileData.isFollowing && state.profileData.profileUsername != "..." && (
