@@ -45,7 +45,7 @@ function ViewSinglePost() {
   }
 
   const date = new Date(post.createdDate)
-  const formattedDate = `${date.getDate()} ${date.getMonth() + 1} ${date.getFullYear()}`
+  const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 
   async function handleDelete() {
     const areYouSure = window.confirm("Are you sure you want to delete thr post")

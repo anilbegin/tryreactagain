@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { useImmerReducer } from "use-immer"
 import { CSSTransition } from "react-transition-group"
 import Page from "./Page"
 import Axios from "axios"
+import DispatchContext from "../DispatchContext"
 
 function HomeGuest() {
+  const appDispatch = useContext(DispatchContext)
   const initialState = {
     username: {
       value: "",
@@ -24,7 +26,8 @@ function HomeGuest() {
       value: "",
       hasErrors: false,
       message: ""
-    }
+    },
+    submitCount: 0
   }
 
   function ourReducer(draft, action) {
@@ -48,7 +51,7 @@ function HomeGuest() {
         }
         // if there are no Errors found yet, then start procedure of chcking if username us Unique
         // checkCount to be triggered to send Axios request( the Axios request checks if username already Exists in DB)
-        if (!draft.username.hasErrors) {
+        if (!draft.username.hasErrors && !action.submitCheck) {
           draft.username.sendCount++
         }
         return
@@ -72,7 +75,7 @@ function HomeGuest() {
           draft.email.message = "you need to enter a valid email address"
         }
         // if there are no errors yet, then start procedure to check if email already exists/in use
-        if (!draft.email.hasErrors) {
+        if (!draft.email.hasErrors && !action.submitCheck) {
           draft.email.sendCount++
         }
         return
@@ -97,6 +100,11 @@ function HomeGuest() {
         if (draft.password.value.length < 12) {
           draft.password.hasErrors = true
           draft.password.message = "Password should have atleast 12 characters"
+        }
+        return
+      case "submitForm":
+        if (!draft.username.hasErrors && !draft.email.hasErrors && !draft.password.hasErrors && draft.username.isUnique && draft.email.isUnique) {
+          draft.submitCount++
         }
         return
     }
@@ -165,9 +173,34 @@ function HomeGuest() {
     }
   }, [state.password.value])
 
-  // when user submits the form
+  // when user submits the form Step -2
+  useEffect(() => {
+    if (state.submitCount) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          const response = await Axios.post("/register", { username: state.username.value, email: state.email.value, password: state.password.value }, { cancelToken: ourRequest.token })
+          //console.log(response.data) // returns Token, Username, Avatar
+          appDispatch({ type: "login", data: response.data })
+          appDispatch({ type: "flashMessage", value: "Congrats, you have successfully registered !" })
+        } catch (e) {
+          console.log("There was a problem")
+        }
+      }
+      fetchResults()
+      return () => ourRequest.cancel()
+    }
+  }, [state.submitCount])
+
+  // when user submits the form Step -1
   async function handleSubmit(e) {
     e.preventDefault()
+    // mainly checking for validation again if user leaves any Field Blank
+    // submitCheck action, helps to avoid sending unneeded Axios request for isUnique check again
+    dispatch({ type: "usernameAfterDelay", value: state.username.value, submitCheck: true })
+    dispatch({ type: "emailAfterDelay", value: state.email.value, submitCheck: true })
+    dispatch({ type: "passwordAfterDelay", value: state.password.value })
+    dispatch({ type: "submitForm" })
   }
   return (
     <Page title="Homepage" wide={true}>
