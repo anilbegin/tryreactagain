@@ -87,7 +87,7 @@ function Chat() {
         {state.chatMessages.map((message, index) => {
           if (message.username == appState.user.username) {
             return (
-              <div className="chat-self">
+              <div key={index} className="chat-self">
                 <div className="chat-message">
                   <div className="chat-message-inner">{message.message}</div>
                 </div>
@@ -96,7 +96,7 @@ function Chat() {
             )
           }
           return (
-            <div className="chat-other">
+            <div key={index} className="chat-other">
               <Link to={`/profile/${message.username}`}>
                 <img className="avatar-tiny" src={message.avatar} />
               </Link>
