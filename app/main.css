@@ -588,3 +588,8 @@ textarea.tall-textarea {
   right: 0;
   bottom: 0;
 }
+
+/* Pen logo beside the website name in Header.js */
+.fa-pen-alt {
+  color: #fff;
+}

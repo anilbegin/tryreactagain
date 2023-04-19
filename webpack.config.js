@@ -1,3 +1,5 @@
+// an older webpack config is present with the name Oldwebpackconfig.txt
+// this is a new webpack config made for production version of our project
 const currentTask = process.env.npm_lifecycle_event
 const path = require("path")
 const Dotenv = require("dotenv-webpack")
