@@ -42,7 +42,10 @@ function Chat() {
         draft.chatMessages.push(message)
       })
     })
-    return () => socket.current.disconnect() // disconnect from ongoing socket Chat connection, when logout/ Chat component unmounts
+    return () => {
+      appDispatch({ type: "closeChat" }) // close Chat on logout  // BUG(solved): chat remained open during next login, if user has kept Chat open on last login
+      socket.current.disconnect() // disconnect from ongoing socket Chat connection, when logout/ Chat component unmounts
+    }
   }, [])
 
   useEffect(() => {
