@@ -6,9 +6,12 @@ import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
 // will establish an ongoing connection between the Browser and the backend server
-const socket = io("http://localhost:8080")
+//const socket = io("http://localhost:8080")
+// move the above procedure/line to live within our React component, step taken while lazy loading Chat component
+// so after closing socket connection when user logs out, later when user logs back in, we want to re-establish the socket connection
 
 function Chat() {
+  const socket = useRef(null) // procedure to make establishing socket connection to live within our React component
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const chatField = useRef(null)
@@ -33,17 +36,19 @@ function Chat() {
   // we would want to begin lisgtening for it, the first time this component renders
   // hence the below useEffect
   useEffect(() => {
-    socket.on("chatFromServer", message => {
+    socket.current = io("http://localhost:8080") // re-establishing Chat connection when user logs backin
+    socket.current.on("chatFromServer", message => {
       setState(draft => {
         draft.chatMessages.push(message)
       })
     })
+    return () => socket.current.disconnect() // disconnect from ongoing socket Chat connection, when logout/ Chat component unmounts
   }, [])
 
   useEffect(() => {
     // watch the chatMessages for changes and scroll the chatLog div to the bottom most position
     chatLog.current.scrollTop = chatLog.current.scrollHeight
-    // below code apploed for adding Unread chat count
+    // below code applied for adding Unread chat count
     if (state.chatMessages.length && !appState.isChatOpen) {
       appDispatch({ type: "increaseUnreadChatCount" })
     }
@@ -59,7 +64,7 @@ function Chat() {
   function handleSubmit(e) {
     e.preventDefault()
     // send the chat message to the server
-    socket.emit("chatFromBrowser", { message: state.fieldValue, token: appState.user.token })
+    socket.current.emit("chatFromBrowser", { message: state.fieldValue, token: appState.user.token })
     setState(draft => {
       // add message to state collection of messgaes
       draft.chatMessages.push({ message: draft.fieldValue, username: appState.user.username, avatar: appState.user.avatar })

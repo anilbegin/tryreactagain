@@ -24,8 +24,10 @@ import EditPost from "./components/EditPost"
 import FlashMessages from "./components/FlashMessages"
 import Profile from "./components/Profile"
 import NotFound from "./components/NotFound"
-import Search from "./components/Search"
-import Chat from "./components/Chat"
+//import Search from "./components/Search"
+const Search = React.lazy(() => import("./components/Search"))
+//import Chat from "./components/Chat"
+const Chat = React.lazy(() => import("./components/Chat"))
 import LoadingDotsIcon from "./components/LoadingDotsIcon"
 
 function Main() {
@@ -127,9 +129,13 @@ function Main() {
             </Routes>
           </Suspense>
           <CSSTransition timeout={330} in={state.isSearchOpen} classNames="search-overlay" unmountOnExit>
-            <Search />
+            <div className="search-overlay">
+              <Suspense fallback="">
+                <Search />
+              </Suspense>
+            </div>
           </CSSTransition>
-          <Chat />
+          <Suspense fallback="">{state.loggedIn && <Chat />}</Suspense>
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>
