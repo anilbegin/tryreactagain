@@ -6,6 +6,7 @@ import HeaderLoggedIn from "./HeaderLoggedIn"
 
 function Header(props) {
   const appState = useContext(StateContext)
+  const headerContent = appState.loggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />
   return (
     <header className="header-bar bg-primary mb-3">
       <div className="container d-flex flex-column flex-md-row align-items-center p-3">
@@ -15,7 +16,7 @@ function Header(props) {
             <i className="fas fa-pen-alt fa-xs"></i>
           </Link>
         </h4>
-        {appState.loggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />}
+        {!props.staticEmpty ? headerContent : ""}
       </div>
     </header>
   )
