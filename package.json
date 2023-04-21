@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack serve",
+    "dev": "npm-run-all -s generate webpackDev",
+    "build": "npm-run-all -s generate webpackBuild",
+    "webpackDev": "webpack serve",
     "webpackBuild": "webpack",
     "previewDist": "node previewDist",
     "generate": "babel-node --presets=@babel/preset-react,@babel/preset-env generateHtml.js",
@@ -35,6 +37,7 @@
     "html-webpack-harddisk-plugin": "^2.0.0",
     "html-webpack-plugin": "^5.5.1",
     "immer": "^9.0.19",
+    "npm-run-all": "^4.1.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
