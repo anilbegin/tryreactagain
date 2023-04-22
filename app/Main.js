@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 import Axios from "axios"
 //Axios.defaults.baseURL = "http://localhost:8080"
-Axios.defaults.baseURL = process.env.BACKENDURL || "" // procedure done after declaring defaultURL in .env file
+Axios.defaults.baseURL = process.env.BACKENDURL || "https://reactpracticebackend.onrender.com" // procedure done after declaring defaultURL in .env file
 
 import Statecontext from "./StateContext"
 import DispatchContext from "./DispatchContext"

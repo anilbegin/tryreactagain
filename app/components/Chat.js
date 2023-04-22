@@ -36,7 +36,7 @@ function Chat() {
   // we would want to begin lisgtening for it, the first time this component renders
   // hence the below useEffect
   useEffect(() => {
-    socket.current = io("http://localhost:8080") // re-establishing Chat connection when user logs backin
+    socket.current = io(process.env.BACKENDURL || "https://reactpracticebackend.onrender.com") // re-establishing Chat connection when user logs backin
     socket.current.on("chatFromServer", message => {
       setState(draft => {
         draft.chatMessages.push(message)
