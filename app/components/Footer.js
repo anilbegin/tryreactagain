@@ -20,7 +20,7 @@ function Footer() {
       <p className="m-0">
         Copyright &copy; {new Date().getFullYear()}{" "}
         <Link to="/" className="text-muted">
-          ComplexApp
+          WriteApp
         </Link>
         . All rights reserved.
       </p>

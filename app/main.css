@@ -50,7 +50,7 @@ body {
 }
 
 .form-control-title {
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 500;
 }
 
@@ -583,13 +583,19 @@ textarea.tall-textarea {
 }
 
 .footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  height: 5vh;
 }
 
 /* Pen logo beside the website name in Header.js */
 .fa-pen-alt {
   color: #fff;
+}
+
+#app {
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: calc(100vh - 5vh); /* or the minimum height of your content */
+}
+.main {
+  flex-grow: 1;
 }
