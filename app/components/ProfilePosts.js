@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom"
 import Axios from "axios"
 import LoadingDotsIcon from "./LoadingDotsIcon"
 import Posts from "./Posts"
+import NotFound from "./NotFound"
 
 function ProfilePosts() {
   const { username } = useParams()
@@ -27,6 +28,8 @@ function ProfilePosts() {
   }, [username])
 
   if (isLoading) return <LoadingDotsIcon />
+
+  if (!posts && !isLoading) return <NotFound />
 
   return (
     <div className="list-group">

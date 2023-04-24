@@ -40,6 +40,7 @@ function ViewSinglePost() {
         <LoadingDotsIcon />
       </Page>
     )
+  // If the post does not exist
   if (!isLoading && !post) {
     return <NotFound />
   }
