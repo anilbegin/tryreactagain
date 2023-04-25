@@ -33,6 +33,7 @@ function ProfilePosts() {
 
   return (
     <div className="list-group">
+      {posts.length == 0 && <p className="list-group-item text-muted lead">No posts yet.</p>}
       {posts.map(post => {
         return <Posts post={post} key={post._id} noAuthor={true} />
       })}
