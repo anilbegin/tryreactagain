@@ -85,7 +85,7 @@ function EditPost() {
         const response = await Axios.get(`/post/${state.id}`, { cancelToken: ourRequest.token })
         if (response.data) {
           if (appState.user.username != response.data.author.username) {
-            appDispatch({ type: "flashMessage", value: "You are not allowed to edit that post." })
+            appDispatch({ type: "flashMessage", value: "You are not allowed to edit that post.", alertType: "alert-warning" })
             navigate("/")
           }
           dispatch({ type: "fetchComplete", value: response.data })

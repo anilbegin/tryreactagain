@@ -58,10 +58,10 @@ function HeaderLoggedOut(props) {
           //console.log(response.data)
           if (response.data) {
             appDispatch({ type: "login", data: response.data })
-            appDispatch({ type: "flashMessage", value: "You have logged in successfully !" })
+            appDispatch({ type: "flashMessage", value: "You have logged in successfully !", alertType: "alert-success" })
           } else {
             //console.log("Incorrect Username/Password")
-            appDispatch({ type: "flashMessage", value: "Invalid username/password" })
+            appDispatch({ type: "flashMessage", value: "Invalid username/password", alertType: "alert-danger" })
           }
         } catch (e) {
           console.log("There was a problem")

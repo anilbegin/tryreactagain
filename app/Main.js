@@ -34,7 +34,8 @@ import LoadingDotsIcon from "./components/LoadingDotsIcon"
 function Main() {
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("complexappToken")),
-    flashMessages: [],
+    flashMessages: [], // stacks alert messages in an array passed as prop to FlashMessages component
+    alertColor: "", // stores the color for the flash message
     user: {
       username: localStorage.getItem("complexappUsername"),
       avatar: localStorage.getItem("complexappAvatar"),
@@ -56,6 +57,7 @@ function Main() {
         return
       case "flashMessage":
         draft.flashMessages.push(action.value)
+        draft.alertColor = action.alertType // specifies Custom color for alert message, eg: alert-danger, alert-success
         return
       case "openSearch":
         draft.isSearchOpen = true
@@ -100,7 +102,7 @@ function Main() {
           const response = await Axios.post("/checkToken", { token: state.user.token }, { cancelToken: ourRequest.token })
           if (!response.data) {
             dispatch({ type: "logout" })
-            dispatch({ type: "flashMessage", value: "your session has expired, please login again.." })
+            dispatch({ type: "flashMessage", value: "your session has expired, please login again..", alertType: "alert-info" })
           }
         } catch (e) {
           console.log("There was a problem")
@@ -115,7 +117,7 @@ function Main() {
     <Statecontext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
         <BrowserRouter>
-          <FlashMessages messages={state.flashMessages} />
+          <FlashMessages alert={state.alertColor} messages={state.flashMessages} />
           <Header />
           <Suspense fallback={<LoadingDotsIcon />}>
             <Routes>

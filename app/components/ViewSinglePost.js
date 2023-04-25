@@ -54,7 +54,7 @@ function ViewSinglePost() {
       try {
         const response = await Axios.delete(`/post/${id}`, { data: { token: appState.user.token } })
         if (response.data == "Success") {
-          appDispatch({ type: "flashMessage", value: "Your post was Deleted successfully." })
+          appDispatch({ type: "flashMessage", value: "Your post was Deleted successfully.", alertType: "alert-success" })
           navigate(`/profile/${appState.user.username}`)
         }
       } catch (e) {

@@ -16,7 +16,7 @@ function CreatePost() {
       // c - Token - the token is how the server knows that it can trust our request
       const response = await Axios.post("/create-post", { title, body, token: localStorage.getItem("complexappToken") })
       //redirect to new post URL
-      appDispatch({ type: "flashMessage", value: "Congratulations, you successfully created the post" })
+      appDispatch({ type: "flashMessage", value: "Congratulations, you successfully created the post", alertType: "alert-success" })
       navigate(`/post/${response.data}`)
       console.log("New Post was created")
     } catch (e) {
