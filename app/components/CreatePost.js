@@ -3,12 +3,21 @@ import { useNavigate } from "react-router-dom"
 import Page from "./Page"
 import Axios from "axios"
 import DispatchContext from "../DispatchContext"
+import StateContext from "../StateContext"
 
 function CreatePost() {
   const [title, setTitle] = useState()
   const [body, setBody] = useState()
   const navigate = useNavigate()
   const appDispatch = useContext(DispatchContext)
+  const appState = useContext(StateContext)
+
+  /*  
+  if (!appState.loggedIn) {
+    appDispatch({ type: "flashMessage", value: "You need to be logged in to create a post", alertType: "alert-danger" })
+    navigate("/")
+  }
+*/
   async function handleSubmit(e) {
     e.preventDefault()
     try {

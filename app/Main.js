@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer, Suspense } from "react"
 import ReactDOM from "react-dom/client"
 import { useImmerReducer } from "use-immer"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { CSSTransition } from "react-transition-group"
 import Axios from "axios"
 //Axios.defaults.baseURL = "http://localhost:8080"
@@ -122,7 +122,7 @@ function Main() {
           <Suspense fallback={<LoadingDotsIcon />}>
             <Routes>
               <Route path="/" element={state.loggedIn ? <Home /> : <HomeGuest />} />
-              <Route path="/create-post" element={<CreatePost />} />
+              <Route path="/create-post" element={state.loggedIn ? <CreatePost /> : <Navigate to="/" />} />
               <Route path="/post/:id" element={<ViewSinglePost />} />
               <Route path="/post/:id/edit" element={<EditPost />} />
               <Route path="/profile/:username/*" element={<Profile />} />
