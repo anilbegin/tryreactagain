@@ -137,7 +137,7 @@ function EditPost() {
   function handleUpdates(e) {
     e.preventDefault()
     dispatch({ type: "checkTitle", value: state.title.value })
-    dispatch({ tupe: "checkBody", value: state.body.value })
+    dispatch({ type: "checkBody", value: state.body.value })
     dispatch({ type: "saveUpdates" })
   }
 
