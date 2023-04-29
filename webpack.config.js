@@ -40,6 +40,7 @@ config = {
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "app/index-template.html",
+      favicon: "app/favicon.ico",
       alwaysWriteToDisk: true
     }),
     new HtmlWebpackHarddiskPlugin()
