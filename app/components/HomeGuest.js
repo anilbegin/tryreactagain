@@ -215,7 +215,7 @@ function HomeGuest() {
               <label htmlFor="username-register" className="text-muted mb-1">
                 <small>Username</small>
               </label>
-              <input onChange={e => dispatch({ type: "usernameImmediately", value: e.target.value })} id="username-register" name="username" className="form-control" type="text" placeholder="Pick a username" autoComplete="off" />
+              <input onChange={e => dispatch({ type: "usernameImmediately", value: e.target.value })} id="username-register" name="username" className={"form-control" + (state.username.isUnique && state.username.value ? " is-valid" : "")} type="text" placeholder="Pick a username" autoComplete="off" />
               <CSSTransition in={state.username.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                 <div className="alert alert-danger small liveValidateMessage">{state.username.message}</div>
               </CSSTransition>
@@ -224,7 +224,7 @@ function HomeGuest() {
               <label htmlFor="email-register" className="text-muted mb-1">
                 <small>Email</small>
               </label>
-              <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" className="form-control" type="text" placeholder="you@example.com" autoComplete="off" />
+              <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" className={"form-control" + (state.email.isUnique && state.email.value ? " is-valid" : "")} type="text" placeholder="you@example.com" autoComplete="off" />
               <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                 <div className="alert alert-danger small liveValidateMessage">{state.email.message}</div>
               </CSSTransition>
@@ -233,7 +233,7 @@ function HomeGuest() {
               <label htmlFor="password-register" className="text-muted mb-1">
                 <small>Password</small>
               </label>
-              <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" className="form-control" type="password" placeholder="Create a password" />
+              <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" className={"form-control" + (state.password.value.length >=12 && state.password.value.length <=50 ? " is-valid" : "")} type="password" placeholder="Create a password" />
               <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                 <div className="alert alert-danger small liveValidateMessage">{state.password.message}</div>
               </CSSTransition>
